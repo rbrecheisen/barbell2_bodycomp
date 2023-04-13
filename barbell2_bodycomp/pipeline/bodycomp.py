@@ -62,6 +62,12 @@ class BodyCompositionPipeline:
 
 if __name__ == '__main__':
     def main():
+        # update package path
+        import sys
+        root_dir = '/home/local/UNIMAAS/r.brecheisen/barbell2_bodycomp'
+        if root_dir not in sys.path:
+            sys.path.append(root_dir)
+        # run pipeline
         pipeline = BodyCompositionPipeline(
             '/mnt/localscratch/cds/rbrecheisen/raw/tlodewick-ct-noise-1/AL_100%/101816478/2-Abdomen',
             '/mnt/localscratch/cds/rbrecheisen/processed/out', [
