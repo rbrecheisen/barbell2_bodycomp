@@ -4,3 +4,4 @@ pynrrd
 matplotlib
 nibabel
 tensorflow
+totalsegmentator

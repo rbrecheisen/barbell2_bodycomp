@@ -13,6 +13,7 @@ requirements = [
     'matplotlib',
     'nibabel',
     'tensorflow',
+    'totalsegmentator',
 ]
 
 setup_requirements = []
