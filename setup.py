@@ -11,6 +11,7 @@ requirements = [
     'pydicom',
     'pynrrd',
     'matplotlib',
+    'nibabel',
 ]
 
 setup_requirements = []
