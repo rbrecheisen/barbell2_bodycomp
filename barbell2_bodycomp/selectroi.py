@@ -14,8 +14,8 @@ class RoiSelector:
 
     def __init__(self):
         self.input_directory = None
-        self.roi = None
         self.output_directory = None
+        self.roi = RoiSelector.VERTEBRAE_L3
         self.overwrite = True
         self.output_file = None
 

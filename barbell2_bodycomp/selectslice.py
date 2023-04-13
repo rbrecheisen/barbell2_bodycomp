@@ -19,7 +19,7 @@ class SliceSelector:
         self.input_roi = None
         self.input_volume = None
         self.input_dicom_directory = None
-        self.mode = None
+        self.mode = SliceSelector.MEDIAN
         self.output_files = None
 
     @staticmethod

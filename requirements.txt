@@ -3,3 +3,4 @@ pydicom
 pynrrd
 matplotlib
 nibabel
+tensorflow

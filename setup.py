@@ -12,6 +12,7 @@ requirements = [
     'pynrrd',
     'matplotlib',
     'nibabel',
+    'tensorflow',
 ]
 
 setup_requirements = []

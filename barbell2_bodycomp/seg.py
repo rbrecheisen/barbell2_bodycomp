@@ -5,7 +5,7 @@ import logging
 import pydicom
 import numpy as np
 
-from barbell2.utils import is_dicom_file, get_pixels
+from barbell2_bodycomp.utils import is_dicom_file, get_pixels
 
 logger = logging.getLogger(__name__)
 
@@ -26,7 +26,7 @@ class MuscleFatSegmentator:
     @staticmethod
     def load_model(file_path):
         import tensorflow as tf
-        model_directory = '/tmp/barbell2/bodycomp/seg.py'
+        model_directory = '/tmp/barbell2_bodycomp/model'
         os.makedirs(model_directory, exist_ok=True)
         with zipfile.ZipFile(file_path) as zip_obj:
             zip_obj.extractall(path=model_directory)
