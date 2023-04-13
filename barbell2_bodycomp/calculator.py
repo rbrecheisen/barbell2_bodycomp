@@ -3,7 +3,7 @@ import logging
 import pydicom
 import numpy as np
 
-from barbell2.utils import calculate_area, calculate_mean_radiation_attenuation, get_pixels
+from barbell2_bodycomp.utils import calculate_area, calculate_mean_radiation_attenuation, get_pixels
 
 logger = logging.getLogger(__name__)
 
