@@ -2,7 +2,7 @@ import os
 import argparse
 
 from barbell2_bodycomp.convert import DicomToNifti
-from barbell2_bodycomp import TotalSegmentator, RoiSelector, SliceSelector, MuscleFatSegmentator
+from barbell2_bodycomp import TotalSegmentator, RoiSelector, SliceSelector, MuscleFatSegmentator, BodyCompositionCalculator
 
 
 class BodyCompositionPipeline:
@@ -61,6 +61,12 @@ class BodyCompositionPipeline:
         output_files = segmentator.execute()
         for f in output_files:
             print(f)
+        # calculte body composition metrics
+        calculator = BodyCompositionCalculator()
+        calculator.input_files = segmentator.input_files
+        calculator.input_segmentation_files = output_files
+        output_metrics = calculator.execute()
+        print(output_metrics)
 
 
 if __name__ == '__main__':
