@@ -75,7 +75,7 @@ if __name__ == '__main__':
             input_directory=args.input_directory,
             output_directory=args.output_directory, 
             model_files=args.model_files,
-            mode=MuscleFatSegmentator.ARGMAX if args.mode == 'ARGMAX' else MuscleFatSegmentator.PROBABILITIES ,
+            mode=MuscleFatSegmentator.ARGMAX if args.mode == 'ARGMAX' else MuscleFatSegmentator.PROBABILITIES,
         )
         pipeline.execute()
     main()
