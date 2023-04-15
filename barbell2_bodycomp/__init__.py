@@ -1,6 +1,6 @@
 __author__ = 'Ralph Brecheisen'
 __email__ = 'r.brecheisen@maastrichtuniversity.nl'
-__version__ = '0.4.0'
+__version__ = '0.5.0'
 
 from barbell2_bodycomp.calculator import BodyCompositionCalculator
 from barbell2_bodycomp.seg import MuscleFatSegmentator
