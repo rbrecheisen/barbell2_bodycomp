@@ -37,7 +37,7 @@ class BodyCompositionPipeline:
         output_dir = totalseg.execute()
         # select l3 vertebra roi
         selector = RoiSelector()
-        selector.input_directory(output_dir)
+        selector.input_directory = output_dir
         selector.output_directory = os.path.join(self.output_directory, 'roi')
         selector.roi = RoiSelector.VERTEBRAE_L3
         roi_file = selector.execute()
