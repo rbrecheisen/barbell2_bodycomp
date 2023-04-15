@@ -1,4 +1,5 @@
 import os
+import argparse
 
 from barbell2_bodycomp.convert import DicomToNifti
 from barbell2_bodycomp import TotalSegmentator, RoiSelector, SliceSelector, MuscleFatSegmentator
@@ -62,20 +63,19 @@ class BodyCompositionPipeline:
 
 if __name__ == '__main__':
     def main():
-        # update package path
-        import sys
-        root_dir = '/home/local/UNIMAAS/r.brecheisen/barbell2_bodycomp'
-        if root_dir not in sys.path:
-            sys.path.append(root_dir)
-        # run pipeline
+
+        parser = argparse.ArgumentParser()
+        parser.add_argument('input_directory')
+        parser.add_argument('output_directory')
+        parser.add_argument('model_files', nargs='+', default=[])
+        parser.add_argument('mode', choices=['ARGMAX', 'PROBABILITIES'])
+        args = parser.parse_args()
+
         pipeline = BodyCompositionPipeline(
-            '/mnt/localscratch/cds/rbrecheisen/raw/tlodewick-ct-noise-1/AL_100%/101816478/2-Abdomen',
-            '/mnt/localscratch/cds/rbrecheisen/processed/out', [
-                '/mnt/localscratch/cds/rbrecheisen/models/v2/model.zip',
-                '/mnt/localscratch/cds/rbrecheisen/models/v2/contour_model.zip',
-                '/mnt/localscratch/cds/rbrecheisen/models/v2/params.json',            
-            ],
-            MuscleFatSegmentator.ARGMAX,
+            input_directory=args.input_directory,
+            output_directory=args.output_directory, 
+            model_files=args.model_files,
+            mode=args.mode,
         )
         pipeline.execute()
     main()
