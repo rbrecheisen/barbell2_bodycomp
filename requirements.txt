@@ -6,3 +6,4 @@ nibabel
 tensorflow==2.10
 scipy==1.9.1
 totalsegmentator
+wheel
