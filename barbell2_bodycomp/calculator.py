@@ -73,11 +73,11 @@ class BodyCompositionCalculator:
             }
             logger.info(f'{file_pair[0]}:')
             logger.info(' - muscle_area: {}'.format(self.output_metrics[file_pair[0]]['muscle_area']))
-            logger.info(' - vat_area: {}'.format(self.output_metrics[file_pair[0]]['muscle_area']))
-            logger.info(' - sat_area: {}'.format(self.output_metrics[file_pair[0]]['muscle_area']))
-            logger.info(' - muscle_ra: {}'.format(self.output_metrics[file_pair[0]]['muscle_area']))
-            logger.info(' - vat_ra: {}'.format(self.output_metrics[file_pair[0]]['muscle_area']))
-            logger.info(' - sat_ra: {}'.format(self.output_metrics[file_pair[0]]['muscle_area']))
+            logger.info(' - vat_area: {}'.format(self.output_metrics[file_pair[0]]['vat_area']))
+            logger.info(' - sat_area: {}'.format(self.output_metrics[file_pair[0]]['sat_area']))
+            logger.info(' - muscle_ra: {}'.format(self.output_metrics[file_pair[0]]['muscle_ra']))
+            logger.info(' - vat_ra: {}'.format(self.output_metrics[file_pair[0]]['vat_ra']))
+            logger.info(' - sat_ra: {}'.format(self.output_metrics[file_pair[0]]['sat_ra']))
         return self.output_metrics
 
 
