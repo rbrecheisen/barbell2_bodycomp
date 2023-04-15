@@ -8,9 +8,11 @@ from barbell2_bodycomp import TotalSegmentator, RoiSelector, SliceSelector, Musc
 class BodyCompositionPipeline:
 
     """
-    purpose of this component is to easily run the whole body composition pipeline from 
-    beginning to end. under the hood, the components handling the different steps are
+    Purpose of this component is to easily run the whole body composition pipeline from 
+    beginning to end. Under the hood, the components handling the different steps are
     executed in sequence.
+
+    TODO: If output already exists, skip it unless overwrite=True
     """
 
     def __init__(self, 
