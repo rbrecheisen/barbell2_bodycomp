@@ -92,7 +92,7 @@ if __name__ == '__main__':
         parser.add_argument('output_directory')
         parser.add_argument('model_files', nargs='+', default=[])
         parser.add_argument('mode', choices=['ARGMAX', 'PROBABILITIES'])
-        parser.add_argument('--steps', nargs='+', default=[])
+        parser.add_argument('--steps', nargs='+')
         args = parser.parse_args()
 
         pipeline = BodyCompositionPipeline(

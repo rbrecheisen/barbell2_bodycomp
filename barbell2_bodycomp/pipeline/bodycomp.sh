@@ -6,4 +6,10 @@ python bodycomp.py \
     "/mnt/localscratch/cds/rbrecheisen/models/v2/model.zip" \
     "/mnt/localscratch/cds/rbrecheisen/models/v2/contour_model.zip" \
     "/mnt/localscratch/cds/rbrecheisen/models/v2/params.json" \
-    "PROBABILITIES"
+    "PROBABILITIES" \
+    --steps \
+        "dicom2nifti" \
+        "totalsegmentator" \
+        "selectroi" \
+        "selectslice" \
+        "l3seg"
