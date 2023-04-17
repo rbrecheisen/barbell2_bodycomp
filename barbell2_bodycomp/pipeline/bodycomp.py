@@ -36,7 +36,7 @@ class BodyCompositionPipeline:
         self.mode = mode
 
     def execute(self):
-        if 'dicom2niftie' in self.steps:
+        if 'dicom2nifti' in self.steps:
             # convert dicoms to nifti
             d2n = DicomToNifti()
             d2n.input_directory = self.input_directory
@@ -94,6 +94,7 @@ if __name__ == '__main__':
         parser.add_argument('mode', choices=['ARGMAX', 'PROBABILITIES'])
         parser.add_argument('--steps', nargs='+')
         args = parser.parse_args()
+        print(args)
 
         pipeline = BodyCompositionPipeline(
             input_directory=args.input_directory,
