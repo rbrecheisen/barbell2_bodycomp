@@ -18,7 +18,7 @@ class BodyCompositionPipeline:
     def __init__(self, 
                  input_directory, 
                  output_directory, 
-                 mode=MuscleFatSegmentator.ARGMAX
+                 mode=MuscleFatSegmentator.ARGMAX,
                  steps=[
                     'dicom2nifti',
                     'totalsegmentator',
