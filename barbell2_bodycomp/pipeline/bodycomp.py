@@ -40,14 +40,15 @@ class BodyCompositionPipeline:
     def load_cached_model_files(self):
         model_files = None
         for location in ['/tmp', '/tmp/mosamatic', '/mnt/localscratch/cds/rbrecheisen/models/v2']:
-            if 'model.zip' in os.listdir(location) and 'contour_model.zip' in os.listdir(location) and 'params.json' in os.listdir(location):
-                print(f'found model files in {location}')
-                model_files = [
-                    os.path.join(location, 'model.zip'),
-                    os.path.join(location, 'contour_model.zip'),
-                    os.path.join(location, 'params.json'),
-                ]
-                break
+            if os.path.isdir(location):
+                if 'model.zip' in os.listdir(location) and 'contour_model.zip' in os.listdir(location) and 'params.json' in os.listdir(location):
+                    print(f'found model files in {location}')
+                    model_files = [
+                        os.path.join(location, 'model.zip'),
+                        os.path.join(location, 'contour_model.zip'),
+                        os.path.join(location, 'params.json'),
+                    ]
+                    break
         if model_files is None:
             raise RuntimeError('could not find model files (searched /tmp, /tmp/mosamatic, /mnt/localscratch/cds/rbrecheisen/models/v2)')
         return model_files
