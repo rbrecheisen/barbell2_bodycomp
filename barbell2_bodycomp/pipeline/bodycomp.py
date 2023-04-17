@@ -107,7 +107,7 @@ if __name__ == '__main__':
         parser = argparse.ArgumentParser()
         parser.add_argument('input_directory')
         parser.add_argument('output_directory')
-        parser.add_argument('mode', choices=['ARGMAX', 'PROBABILITIES'], default='ARGMAX')
+        parser.add_argument('--mode', choices=['ARGMAX', 'PROBABILITIES'], default='ARGMAX')
         parser.add_argument('--steps', nargs='+')
         parser.add_argument('--model_files', nargs='+')
         args = parser.parse_args()
