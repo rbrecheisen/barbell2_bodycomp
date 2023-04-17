@@ -18,7 +18,7 @@ class BodyCompositionPipeline:
     def __init__(self, 
                  input_directory, 
                  output_directory, 
-                 model_files, 
+                 mode=MuscleFatSegmentator.ARGMAX
                  steps=[
                     'dicom2nifti',
                     'totalsegmentator',
@@ -27,13 +27,30 @@ class BodyCompositionPipeline:
                     'l3seg',
                     'calculate',
                  ],
-                 mode=MuscleFatSegmentator.ARGMAX
+                 model_files=None, 
                  ):
         self.input_directory = input_directory
         self.output_directory = output_directory
         self.model_files = model_files
+        if self.model_files is None:
+            self.model_files = self.load_cached_model_files()
         self.steps = steps
         self.mode = mode
+
+    def load_cached_model_files(self):
+        model_files = None
+        for location in ['/tmp', '/tmp/mosamatic', '/mnt/localscratch/cds/rbrecheisen/models/v2']:
+            if 'model.zip' in os.listdir(location) and 'contour_model.zip' in os.listdir(location) and 'params.json' in os.listdir(location):
+                print(f'found model files in {location}')
+                model_files = [
+                    os.path.join(location, 'model.zip'),
+                    os.path.join(location, 'contour_model.zip'),
+                    os.path.join(location, 'params.json'),
+                ]
+                break
+        if model_files is None:
+            raise RuntimeError('could not find model files (searched /tmp, /tmp/mosamatic, /mnt/localscratch/cds/rbrecheisen/models/v2)')
+        return model_files
 
     def execute(self):
         if 'dicom2nifti' in self.steps:
@@ -90,9 +107,9 @@ if __name__ == '__main__':
         parser = argparse.ArgumentParser()
         parser.add_argument('input_directory')
         parser.add_argument('output_directory')
-        parser.add_argument('model_files', nargs='+', default=[])
-        parser.add_argument('mode', choices=['ARGMAX', 'PROBABILITIES'])
+        parser.add_argument('mode', choices=['ARGMAX', 'PROBABILITIES'], default='ARGMAX')
         parser.add_argument('--steps', nargs='+')
+        parser.add_argument('--model_files', nargs='+')
         args = parser.parse_args()
         print(args)
 
