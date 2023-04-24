@@ -1,4 +1,5 @@
 import os
+import shutil
 import argparse
 
 from barbell2_bodycomp.convert import DicomToNifti
@@ -82,6 +83,7 @@ class BodyCompositionPipeline:
                         selector.input_volume = nifti_file
                         selector.mode = SliceSelector.MEDIAN
                         l3_file = selector.execute()[0]
+                        shutil.copy(l3_file, self.output_directory)
                         if 'l3seg' in self.steps:
                             # run l3 through muscle/fat segmentation
                             segmentator = MuscleFatSegmentator()
@@ -95,6 +97,7 @@ class BodyCompositionPipeline:
                                 print(f)
                             if 'calculate' in self.steps:
                                 # calculte body composition metrics
+                                # todo: output to CSV
                                 calculator = BodyCompositionCalculator()
                                 calculator.input_files = segmentator.input_files
                                 calculator.input_segmentation_files = output_files
