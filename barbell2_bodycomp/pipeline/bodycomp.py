@@ -56,7 +56,7 @@ class BodyCompositionPipeline:
         return model_files
 
     def execute(self):
-        os.makedirs(self.output_directory, exist_ok=False)
+        os.makedirs(self.output_directory, exist_ok=True)
         if 'dicom2nifti' in self.steps:
             # convert dicoms to nifti
             d2n = DicomToNifti()
