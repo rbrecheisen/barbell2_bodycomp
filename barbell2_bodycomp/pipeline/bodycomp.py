@@ -17,7 +17,7 @@ class BodyCompositionPipeline:
     """
 
     def __init__(self, 
-                 input_directory, 
+                 input_directories, 
                  output_directory, 
                  mode=MuscleFatSegmentator.ARGMAX,
                  steps=[
@@ -30,7 +30,7 @@ class BodyCompositionPipeline:
                  ],
                  model_files=None, 
                  ):
-        self.input_directory = input_directory
+        self.input_directories = input_directories
         self.output_directory = output_directory
         self.model_files = model_files
         if self.model_files is None:
@@ -56,74 +56,83 @@ class BodyCompositionPipeline:
 
     def execute(self):
         os.makedirs(self.output_directory, exist_ok=False)
-        if 'dicom2nifti' in self.steps:
-            # convert dicoms to nifti
-            d2n = DicomToNifti()
-            d2n.input_directory = self.input_directory
-            d2n.output_file = os.path.join(self.output_directory, 'file.nii.gz')
-            nifti_file = d2n.execute()
-            if 'totalsegmentator' in self.steps:
-                # run total segmentator to obtain l3 vertebra
-                totalseg = TotalSegmentator()
-                totalseg.input_file = nifti_file
-                totalseg.output_directory = os.path.join(self.output_directory, 'totalseg')
-                totalseg.fast = True
-                output_dir = totalseg.execute()
-                if 'selectroi' in self.steps:
-                    # select l3 vertebra roi
-                    selector = RoiSelector()
-                    selector.input_directory = output_dir
-                    selector.output_directory = os.path.join(self.output_directory, 'roi')
-                    selector.roi = RoiSelector.VERTEBRAE_L3
-                    roi_file = selector.execute()
-                    if 'selectslice' in self.steps:
-                        # select l3 slice
-                        selector = SliceSelector()
-                        selector.input_dicom_directory = self.input_directory
-                        selector.input_roi = roi_file
-                        selector.input_volume = nifti_file
-                        selector.mode = SliceSelector.MEDIAN
-                        l3_file = selector.execute()[0]
-                        shutil.copy(l3_file, self.output_directory)
-                        if 'l3seg' in self.steps:
-                            # run l3 through muscle/fat segmentation
-                            segmentator = MuscleFatSegmentator()
-                            segmentator.input_files = [l3_file]
-                            segmentator.image_dimensions = (512, 512)
-                            segmentator.model_files = self.model_files
-                            segmentator.mode = self.mode
-                            segmentator.output_directory = os.path.join(self.output_directory, 'segmentator')
-                            output_files = segmentator.execute()
-                            for f in output_files:
-                                print(f)
-                            if 'calculate' in self.steps:
-                                # calculte body composition metrics
-                                # todo: output to CSV
-                                calculator = BodyCompositionCalculator()
-                                calculator.input_files = segmentator.input_files
-                                calculator.input_segmentation_files = output_files
-                                output_metrics = calculator.execute()
-                                print(output_metrics)
+
+        # iterate through all input directories
+        for input_directory in self.input_directories:
+            
+            # get output directory name
+            output_dir_name = os.path.split(self.output_directory)[1]
+            output_directory = os.path.join(self.output_directory, output_dir_name)
+            print(f'output_dir_name: {output_dir_name}')
+
+            if 'dicom2nifti' in self.steps:
+                # convert dicoms to nifti
+                d2n = DicomToNifti()
+                d2n.input_directory = input_directory
+                d2n.output_file = os.path.join(output_directory, 'file.nii.gz')
+                nifti_file = d2n.execute()
+                if 'totalsegmentator' in self.steps:
+                    # run total segmentator to obtain l3 vertebra
+                    totalseg = TotalSegmentator()
+                    totalseg.input_file = nifti_file
+                    totalseg.output_directory = os.path.join(output_directory, 'totalseg')
+                    totalseg.fast = True
+                    output_dir = totalseg.execute()
+                    if 'selectroi' in self.steps:
+                        # select l3 vertebra roi
+                        selector = RoiSelector()
+                        selector.input_directory = output_dir
+                        selector.output_directory = os.path.join(output_directory, 'roi')
+                        selector.roi = RoiSelector.VERTEBRAE_L3
+                        roi_file = selector.execute()
+                        if 'selectslice' in self.steps:
+                            # select l3 slice
+                            selector = SliceSelector()
+                            selector.input_dicom_directory = input_directory
+                            selector.input_roi = roi_file
+                            selector.input_volume = nifti_file
+                            selector.mode = SliceSelector.MEDIAN
+                            l3_file = selector.execute()[0]
+                            shutil.copy(l3_file, output_directory)
+                            if 'l3seg' in self.steps:
+                                # run l3 through muscle/fat segmentation
+                                segmentator = MuscleFatSegmentator()
+                                segmentator.input_files = [l3_file]
+                                segmentator.image_dimensions = (512, 512)
+                                segmentator.model_files = self.model_files
+                                segmentator.mode = self.mode
+                                segmentator.output_directory = os.path.join(output_directory, 'segmentator')
+                                output_files = segmentator.execute()
+                                for f in output_files:
+                                    print(f)
+                                if 'calculate' in self.steps:
+                                    # calculte body composition metrics
+                                    # todo: output to CSV
+                                    calculator = BodyCompositionCalculator()
+                                    calculator.input_files = segmentator.input_files
+                                    calculator.input_segmentation_files = output_files
+                                    output_metrics = calculator.execute()
+                                    print(output_metrics)
 
 
 if __name__ == '__main__':
     def main():
 
         parser = argparse.ArgumentParser()
-        parser.add_argument('input_directory')
-        parser.add_argument('output_directory')
+        parser.add_argument('--input_directories', nargs='+')
+        parser.add_argument('--output_directory')
         parser.add_argument('--mode', choices=['ARGMAX', 'PROBABILITIES'], default='ARGMAX')
         parser.add_argument('--steps', nargs='+')
         parser.add_argument('--model_files', nargs='+')
         args = parser.parse_args()
         print(args)
 
-        pipeline = BodyCompositionPipeline(
-            input_directory=args.input_directory,
-            output_directory=args.output_directory, 
-            model_files=args.model_files,
-            steps=args.steps,
-            mode=MuscleFatSegmentator.ARGMAX if args.mode == 'ARGMAX' else MuscleFatSegmentator.PROBABILITIES,
-        )
-        pipeline.execute()
+        # pipeline = BodyCompositionPipeline(
+        #     input_directories=args.input_directories,
+        #     output_directory=args.output_directory, 
+        #     model_files=args.model_files,
+        #     steps=args.steps,
+        #     mode=MuscleFatSegmentator.ARGMAX if args.mode == 'ARGMAX' else MuscleFatSegmentator.PROBABILITIES,
+        # )
+        # pipeline.execute()
     main()
