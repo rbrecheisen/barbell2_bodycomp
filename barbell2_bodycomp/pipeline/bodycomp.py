@@ -63,7 +63,7 @@ class BodyCompositionPipeline:
             # get output directory name
             output_dir_name = os.path.split(input_directory)[1]
             output_directory = os.path.join(self.output_directory, output_dir_name)
-            print(f'output_dir_name: {output_dir_name}')
+            os.makedirs(output_directory, exist_ok=False)
 
             if 'dicom2nifti' in self.steps:
                 # convert dicoms to nifti
