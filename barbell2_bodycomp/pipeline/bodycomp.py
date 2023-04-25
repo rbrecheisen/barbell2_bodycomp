@@ -127,12 +127,12 @@ if __name__ == '__main__':
         args = parser.parse_args()
         print(args)
 
-        # pipeline = BodyCompositionPipeline(
-        #     input_directories=args.input_directories,
-        #     output_directory=args.output_directory, 
-        #     model_files=args.model_files,
-        #     steps=args.steps,
-        #     mode=MuscleFatSegmentator.ARGMAX if args.mode == 'ARGMAX' else MuscleFatSegmentator.PROBABILITIES,
-        # )
-        # pipeline.execute()
+        pipeline = BodyCompositionPipeline(
+            input_directories=args.input_directories,
+            output_directory=args.output_directory, 
+            model_files=args.model_files,
+            steps=args.steps,
+            mode=MuscleFatSegmentator.ARGMAX if args.mode == 'ARGMAX' else MuscleFatSegmentator.PROBABILITIES,
+        )
+        pipeline.execute()
     main()
