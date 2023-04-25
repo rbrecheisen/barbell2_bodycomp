@@ -15,9 +15,8 @@ export PYTHONPATH=$HOME/barbell2_bodycomp:$PYTHONPATH
 #         "l3seg"
 
 python bodycomp.py \
-    --input_directories \
-        "/home/local/UNIMAAS/r.brecheisen/data/raw/HCCBC_Julia_Sonneveld_CT/HCC_004_before" \
-    --output_directory "/mnt/localscratch/cds/rbrecheisen/processed/HCCBC_Julia_Sonneveld_CT" \
+    "/home/local/UNIMAAS/r.brecheisen/data/raw/HCCBC_Julia_Sonneveld_CT/HCC_004_before" \
+    "/mnt/localscratch/cds/rbrecheisen/processed/HCCBC_Julia_Sonneveld_CT" \
     --mode "ARGMAX" \
     --steps \
         "dicom2nifti" \
