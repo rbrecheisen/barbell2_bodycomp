@@ -15,7 +15,7 @@ export PYTHONPATH=$HOME/barbell2_bodycomp:$PYTHONPATH
 #         "l3seg"
 
 python bodycomp.py \
-    "/mnt/localscratch/cds/rbrecheisen/processed/HCCBC_Julia_Sonneveld_CT/HCC_004_before/decompress" \
+    "/mnt/localscratch/cds/rbrecheisen/raw/HCCBC_Julia_Sonneveld_CT/HCC_004_before_raw" \
     "/mnt/localscratch/cds/rbrecheisen/processed/HCCBC_Julia_Sonneveld_CT" \
     --mode "ARGMAX" \
     --steps \
