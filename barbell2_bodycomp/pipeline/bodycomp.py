@@ -61,7 +61,7 @@ class BodyCompositionPipeline:
         for input_directory in self.input_directories:
             
             # get output directory name
-            output_dir_name = os.path.split(self.output_directory)[1]
+            output_dir_name = os.path.split(input_directory)[1]
             output_directory = os.path.join(self.output_directory, output_dir_name)
             print(f'output_dir_name: {output_dir_name}')
 
