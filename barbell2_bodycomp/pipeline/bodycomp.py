@@ -1,4 +1,5 @@
 import os
+import json
 import shutil
 import argparse
 
@@ -94,8 +95,6 @@ class BodyCompositionPipeline:
                             segmentator.mode = self.mode
                             segmentator.output_directory = os.path.join(self.output_directory, 'segmentator')
                             output_files = segmentator.execute()
-                            for f in output_files:
-                                print(f)
                             if 'calculate' in self.steps:
                                 # calculte body composition metrics
                                 # todo: output to CSV
@@ -103,6 +102,10 @@ class BodyCompositionPipeline:
                                 calculator.input_files = segmentator.input_files
                                 calculator.input_segmentation_files = output_files
                                 output_metrics = calculator.execute()
+                                output_directory = os.path.join(self.output_directory, 'calculate')
+                                os.makedirs(output_directory, exist_ok=True)
+                                with open(l3_file + '.json', 'w') as f:
+                                    json.dump(output_metrics, f)
                                 print(output_metrics)
 
 
