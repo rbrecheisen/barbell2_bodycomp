@@ -25,3 +25,87 @@ python bodycomp.py \
         "selectslice" \
         "l3seg" \
         "calculate"
+
+python bodycomp.py \
+    "/mnt/localscratch/cds/rbrecheisen/raw/HCCBC_Julia_Sonneveld_CT/HCC_116_before_raw" \
+    "/mnt/localscratch/cds/rbrecheisen/processed/HCCBC_Julia_Sonneveld_CT" \
+    --mode "ARGMAX" \
+    --steps \
+        "dicom2nifti" \
+        "totalsegmentator" \
+        "selectroi" \
+        "selectslice" \
+        "l3seg" \
+        "calculate"
+
+python bodycomp.py \
+    "/mnt/localscratch/cds/rbrecheisen/raw/HCCBC_Julia_Sonneveld_CT/HCC_150_after_raw" \
+    "/mnt/localscratch/cds/rbrecheisen/processed/HCCBC_Julia_Sonneveld_CT" \
+    --mode "ARGMAX" \
+    --steps \
+        "dicom2nifti" \
+        "totalsegmentator" \
+        "selectroi" \
+        "selectslice" \
+        "l3seg" \
+        "calculate"
+
+python bodycomp.py \
+    "/mnt/localscratch/cds/rbrecheisen/raw/HCCBC_Julia_Sonneveld_CT/HCC_150_before_raw" \
+    "/mnt/localscratch/cds/rbrecheisen/processed/HCCBC_Julia_Sonneveld_CT" \
+    --mode "ARGMAX" \
+    --steps \
+        "dicom2nifti" \
+        "totalsegmentator" \
+        "selectroi" \
+        "selectslice" \
+        "l3seg" \
+        "calculate"
+
+python bodycomp.py \
+    "/mnt/localscratch/cds/rbrecheisen/raw/HCCBC_Julia_Sonneveld_CT/HCC_430_before_raw" \
+    "/mnt/localscratch/cds/rbrecheisen/processed/HCCBC_Julia_Sonneveld_CT" \
+    --mode "ARGMAX" \
+    --steps \
+        "dicom2nifti" \
+        "totalsegmentator" \
+        "selectroi" \
+        "selectslice" \
+        "l3seg" \
+        "calculate"
+
+python bodycomp.py \
+    "/mnt/localscratch/cds/rbrecheisen/raw/HCCBC_Julia_Sonneveld_CT/HCC_449_after_raw" \
+    "/mnt/localscratch/cds/rbrecheisen/processed/HCCBC_Julia_Sonneveld_CT" \
+    --mode "ARGMAX" \
+    --steps \
+        "dicom2nifti" \
+        "totalsegmentator" \
+        "selectroi" \
+        "selectslice" \
+        "l3seg" \
+        "calculate"
+
+python bodycomp.py \
+    "/mnt/localscratch/cds/rbrecheisen/raw/HCCBC_Julia_Sonneveld_CT/HCC_466_before_raw" \
+    "/mnt/localscratch/cds/rbrecheisen/processed/HCCBC_Julia_Sonneveld_CT" \
+    --mode "ARGMAX" \
+    --steps \
+        "dicom2nifti" \
+        "totalsegmentator" \
+        "selectroi" \
+        "selectslice" \
+        "l3seg" \
+        "calculate"
+
+python bodycomp.py \
+    "/mnt/localscratch/cds/rbrecheisen/raw/HCCBC_Julia_Sonneveld_CT/HCC_521_after_raw" \
+    "/mnt/localscratch/cds/rbrecheisen/processed/HCCBC_Julia_Sonneveld_CT" \
+    --mode "ARGMAX" \
+    --steps \
+        "dicom2nifti" \
+        "totalsegmentator" \
+        "selectroi" \
+        "selectslice" \
+        "l3seg" \
+        "calculate"
