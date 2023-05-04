@@ -2,6 +2,7 @@ import os
 import logging
 import pydicom
 import numpy as np
+import pandas as pd
 
 from barbell2_bodycomp.utils import calculate_area, calculate_mean_radiation_attenuation, get_pixels
 
@@ -79,6 +80,20 @@ class BodyCompositionCalculator:
             logger.info(' - vat_ra: {}'.format(self.output_metrics[file_pair[0]]['vat_ra']))
             logger.info(' - sat_ra: {}'.format(self.output_metrics[file_pair[0]]['sat_ra']))
         return self.output_metrics
+    
+    def as_df(self):
+        if self.output_metrics is None:
+            return None
+        data = {'file': [], 'muscle_area': [], 'vat_area': [], 'sat_area': [], 'muscle_ra': [], 'vat_ra': [], 'sat_ra': []}
+        for k in self.output_metrics.keys():
+            data['file'].append(k)
+            data['muscle_area'].append(self.output_metrics[k]['muscle_area'])
+            data['vat_area'].append(self.output_metrics[k]['vat_area'])
+            data['sat_area'].append(self.output_metrics[k]['sat_area'])
+            data['muscle_ra'].append(self.output_metrics[k]['muscle_ra'])
+            data['vat_ra'].append(self.output_metrics[k]['vat_ra'])
+            data['sat_ra'].append(self.output_metrics[k]['sat_ra'])
+        return pd.DataFrame(data=data)
 
 
 if __name__ == '__main__':
