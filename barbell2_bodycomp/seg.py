@@ -17,7 +17,7 @@ class MuscleFatSegmentator:
 
     def __init__(self):
         self.input_files = None
-        self.image_dimensions = None
+        # self.image_dimensions = None
         self.model_files = None
         self.mode = MuscleFatSegmentator.ARGMAX
         self.output_directory = None
@@ -85,9 +85,9 @@ class MuscleFatSegmentator:
         if self.input_files is None:
             logger.error('Input files not specified')
             return None
-        if self.image_dimensions is None:
-            logger.error('Image dimensions not specified')
-            return None
+        # if self.image_dimensions is None:
+        #     logger.error('Image dimensions not specified')
+        #     return None
         if self.model_files is None:
             logger.error('Model files not specified')
             return None
@@ -136,7 +136,7 @@ if __name__ == '__main__':
         segmentator = MuscleFatSegmentator()
         # segmentator.input_files = ['/Users/ralph/Desktop/SliceSelector/L3.dcm']
         segmentator.input_files = ['/mnt/localscratch/cds/rbrecheisen/raw/pancreas-demo-1/1.dcm']
-        segmentator.image_dimensions = (512, 512)
+        # segmentator.image_dimensions = (512, 512)
         segmentator.model_files = [
             '/mnt/localscratch/cds/rbrecheisen/models/v2/model.zip',
             '/mnt/localscratch/cds/rbrecheisen/models/v2/contour_model.zip',
