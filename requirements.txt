@@ -1,5 +1,6 @@
 numpy==1.22
 pydicom
+pandas
 pynrrd
 matplotlib
 nibabel
