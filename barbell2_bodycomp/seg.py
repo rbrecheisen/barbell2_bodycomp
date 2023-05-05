@@ -101,6 +101,7 @@ class MuscleFatSegmentator:
             f_name = os.path.split(f)[1]
             if is_dicom_file(f):
                 p = pydicom.dcmread(f)
+                # if dicom file compressed, decompress it before continuing
                 img1 = get_pixels(p, normalize=True)
                 if contour_model is not None:
                     mask = self.predict_contour(contour_model, img1, params)
