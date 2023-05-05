@@ -5,6 +5,7 @@ import logging
 import pydicom
 import numpy as np
 
+from barbell2_bodycomp.convert import dcm2raw
 from barbell2_bodycomp.utils import is_dicom_file, get_pixels
 
 logger = logging.getLogger(__name__)
@@ -102,6 +103,11 @@ class MuscleFatSegmentator:
             if is_dicom_file(f):
                 p = pydicom.dcmread(f)
                 # if dicom file compressed, decompress it before continuing
+                d2r = dcm2raw.DicomToRaw()
+                d2r.input_file_or_obj = p
+                d2r.save_to_file = False
+                p = d2r.execute()
+                # continue processing
                 img1 = get_pixels(p, normalize=True)
                 if contour_model is not None:
                     mask = self.predict_contour(contour_model, img1, params)
