@@ -11,7 +11,7 @@ class TotalSegmentator:
         self.output_directory = None
         self.fast = False
         self.statistics = False
-        self.radiomics = False
+        # self.radiomics = False
         self.overwrite = True
         self.cmd = None
 
@@ -37,8 +37,8 @@ class TotalSegmentator:
         if self.statistics:
             statistics = '--statistics'
         radiomics = ''
-        if self.radiomics:
-            radiomics = '--radiomics'
+        # if self.radiomics:
+        #     radiomics = '--radiomics'
         self.cmd = 'TotalSegmentator {} {} {} -i {} -o {}'.format(
             statistics, 
             radiomics,
