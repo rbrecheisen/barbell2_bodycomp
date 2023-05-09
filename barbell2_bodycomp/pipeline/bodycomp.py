@@ -100,7 +100,6 @@ class BodyCompositionPipeline:
                             # run l3 through muscle/fat segmentation
                             segmentator = MuscleFatSegmentator()
                             segmentator.input_files = [l3_file]
-                            segmentator.image_dimensions = (512, 512)
                             segmentator.model_files = self.model_files
                             segmentator.mode = self.mode
                             segmentator.output_directory = os.path.join(self.output_directory, 'segmentator')
