@@ -30,6 +30,7 @@ class BodyCompositionPipeline:
                     'calculate',
                  ],
                  model_files=None, 
+                 preferred_roi='L3',
                  ):
         self.input_directory = input_directory
         self.output_directory = output_directory
@@ -38,6 +39,15 @@ class BodyCompositionPipeline:
             self.model_files = self.load_cached_model_files()
         self.steps = steps
         self.mode = mode
+        self.preferred_roi = preferred_roi
+        if self.preferred_roi == 'L2':
+            self.preferred_roi = RoiSelector.VERTEBRAE_L2
+        elif self.preferred_roi == 'L3':
+            self.preferred_roi = RoiSelector.VERTEBRAE_L3
+        elif self.preferred_roi == 'L4':
+            self.preferred_roi = RoiSelector.VERTEBRAE_L3
+        else:
+            print(f'ROI {self.preffered_roi} not supported')
 
     def load_cached_model_files(self):
         model_files = None
@@ -118,6 +128,7 @@ if __name__ == '__main__':
         parser.add_argument('--mode', choices=['ARGMAX', 'PROBABILITIES'], default='ARGMAX')
         parser.add_argument('--steps', nargs='+')
         parser.add_argument('--model_files', nargs='+')
+        parser.add_argument('--preferred_roi', choices=['L2', 'L3', 'L4'], default='L3')
         args = parser.parse_args()
         print(args)
 
@@ -127,6 +138,7 @@ if __name__ == '__main__':
             model_files=args.model_files,
             steps=args.steps,
             mode=MuscleFatSegmentator.ARGMAX if args.mode == 'ARGMAX' else MuscleFatSegmentator.PROBABILITIES,
+            preferred_roi=args.preferred_roi,
         )
         pipeline.execute()
     main()
