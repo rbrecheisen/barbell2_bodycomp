@@ -7,10 +7,24 @@ logger = logging.getLogger(__name__)
 
 class RoiSelector:
 
+    VERTEBRAE_T3 = 'vertebrae_T3.nii.gz'
     VERTEBRAE_T4 = 'vertebrae_T4.nii.gz'
     VERTEBRAE_L2 = 'vertebrae_L2.nii.gz'
     VERTEBRAE_L3 = 'vertebrae_L3.nii.gz'
     VERTEBRAE_L4 = 'vertebrae_L4.nii.gz'
+    FACE = 'face.nii.gz'
+    DUODENUM = 'duodenum.nii.gz'
+    HIP_LEFT = 'hip_left.nii.gz'
+    HIP_RIGHT= 'hip_right.nii.gz'
+    KIDNEY_LEFT = 'kidney_left.nii.gz'
+    KIDNEY_RIGHT = 'kidney_right.nii.gz'
+    AUTOCHTON_LEFT = 'autochthon_left.nii.gz'
+    AUTOCHTON_RIGHT = 'autochthon_right.nii.gz'
+    ADRENAL_GLAND_LEFT = 'adrenal_gland_left.nii.gz'
+    ADRENAL_GLAND_RIGHT = 'adrenal_gland_right.nii.gz'
+    RIB_LEFT_12 = 'rib_left_12.nii.gz'
+    RIB_RIGHT_12 = 'rib_right_12.nii.gz'
+    LIVER = 'liver.nii.gz'
 
     def __init__(self):
         self.input_directory = None
