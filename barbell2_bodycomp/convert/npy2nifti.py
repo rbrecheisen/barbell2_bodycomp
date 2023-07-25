@@ -11,15 +11,16 @@ class NumpyToNifti:
     def __init__(self):
         self.input_file_or_array_obj = None
         self.output_file = None
+        self.affine_transform = np.eye(4)
         self.version = 2
 
     def execute(self):
         if isinstance(self.input_file_or_array_obj, str):
             self.input_file_or_array_obj = np.load(self.input_file_or_array_obj)
         if self.version == 1:
-            self.nifti_obj = nib.Nifti1Image(self.input_file_or_array_obj, affine=np.eye(4))
+            self.nifti_obj = nib.Nifti1Image(self.input_file_or_array_obj, affine=self.affine_transform)
         elif self.version == 2:
-            self.nifti_obj = nib.Nifti2Image(self.input_file_or_array_obj, affine=np.eye(4))
+            self.nifti_obj = nib.Nifti2Image(self.input_file_or_array_obj, affine=self.affine_transform)
         else:
             raise RuntimeError(f'Unknown NIFTI version {self.version}')
         nib.save(self.nifti_obj, self.output_file)
