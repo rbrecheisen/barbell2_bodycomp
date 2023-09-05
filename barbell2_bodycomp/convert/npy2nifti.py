@@ -58,7 +58,7 @@ def main():
                         n2n.version = args.nifti_version
                         n2n.flip_and_rotate = True if args.flip_rotate == 'yes' else False
                         n2n.execute()
-                        print(f'save to {out_filepath}')
+                        logger.info(f'save to {out_filepath}')
             else:
                 raise RuntimeError('in_dir cannot be equal to out_dir')
         else:
@@ -72,7 +72,7 @@ def main():
                 n2n.version = args.nifti_version
                 n2n.flip_and_rotate = True if args.flip_rotate == 'yes' else False
                 n2n.execute()
-                print(f'save to {out_filepath}')
+                logger.info(f'save to {out_filepath}')
             else:
                 raise RuntimeError('in_file cannot be equal to out_file')
         else:

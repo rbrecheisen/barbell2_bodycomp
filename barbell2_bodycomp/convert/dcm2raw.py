@@ -62,7 +62,7 @@ def main():
                         d2r.output_file = out_filepath
                         d2r.save_to_file = True
                         d2r.execute()
-                        print(f'saved to {out_filepath}')
+                        logger.info(f'saved to {out_filepath}')
             else:
                 raise RuntimeError('in_dir cannot be equal to out_dir')
         else:
@@ -75,7 +75,7 @@ def main():
                 d2r.output_file = args.out_file
                 d2r.save_to_file = True
                 d2r.execute()
-                print(f'saved to {args.out_file}')
+                logger.info(f'saved to {args.out_file}')
             else:
                 raise RuntimeError('in_file cannot be equal to out_file')
         else:
