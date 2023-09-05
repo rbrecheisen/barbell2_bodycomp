@@ -43,10 +43,7 @@ def main():
     parser.add_argument('--in_file', help='Input file name')
     parser.add_argument('--out_file', help='Output file name (overwrite otherwise)')
     args = parser.parse_args()
-    # if input directory specified
-    # check if output directory also specified
-    # if not, throw error
-    # else, iterate through DICOM files, convert to *_raw.dcm in output directory
+    # run it
     if args.in_dir is not None:
         if args.out_dir is not None:
             if args.in_dir != args.out_dir:
