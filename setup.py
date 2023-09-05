@@ -46,6 +46,7 @@ setup(
     entry_points={
         'console_scripts': [
             'dcm2raw=barbell2_bodycomp.convert.dcm2raw:main',
+            'npy2nifti=barbell2_bodycomp.convert.npy2nifti:main',
         ],
     },
     test_suite='tests',
