@@ -54,7 +54,18 @@ def main():
                 for f in os.listdir(args.in_dir):
                     f_path = os.path.join(args.in_dir, f)
                     if is_dicom_file(f_path):
-                        print(f_path)
+                        out_filename = os.path.split(f_path)[1]  # gives me filename
+                        if out_filename.endswith('.dcm'):
+                            out_filename = os.path.splitext(out_filename)[0] + '_raw.dcm'
+                        else:
+                            out_filename = out_filename + '_raw.dcm'
+                        out_filepath = os.path.join(args.out_dir, out_filename)
+                        d2r = DicomToRaw()
+                        d2r.input_file_or_obj = f_path
+                        d2r.output_file = out_filepath
+                        d2r.save_to_file = True
+                        d2r.execute()
+                        print(f'saved to {out_filepath}')
             else:
                 raise RuntimeError('in_dir cannot be equal to out_dir')
         else:
@@ -62,7 +73,12 @@ def main():
     elif args.in_file is not None:
         if args.out_file is not None:
             if args.in_file != args.out_file:
-                print(args)
+                d2r = DicomToRaw()
+                d2r.input_file_or_obj = args.in_file
+                d2r.output_file = args.out_file
+                d2r.save_to_file = True
+                d2r.execute()
+                print(f'saved to {args.out_file}')
             else:
                 raise RuntimeError('in_file cannot be equal to out_file')
         else:
