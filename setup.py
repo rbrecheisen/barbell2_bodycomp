@@ -45,6 +45,7 @@ setup(
     setup_requires=setup_requirements,
     entry_points={
         'console_scripts': [
+            'dcm2raw=barbell2_bodycomp.convert.dcm2raw:main',
         ],
     },
     test_suite='tests',
