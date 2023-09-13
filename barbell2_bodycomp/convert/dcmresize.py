@@ -11,6 +11,7 @@ import pydicom
 from pydicom.dataset import FileMetaDataset
 from PIL import Image
 import numpy as np
+import matplotlib.pyplot as plt
 import os
 
 from barbell2_bodycomp.utils import create_fake_dicom
@@ -28,12 +29,13 @@ def resize_dicom(input_path, output_path, target_size):
     """
     # Load the DICOM file
     dicom_data = pydicom.dcmread(input_path)
+    p_new = dicom_data
     
     # Extract pixel data and convert it to a NumPy array
     pixel_data = dicom_data.pixel_array
-    
+
     # Calculate the desired aspect ratio
-    aspect_ratio = target_size[0] / target_size[1]
+    aspect_ratio = dicom_data.Columns / dicom_data.Rows
     
     # Determine the scaling factor to maintain aspect ratio
     target_width, target_height = target_size
@@ -49,7 +51,7 @@ def resize_dicom(input_path, output_path, target_size):
     img = img.resize((new_width, new_height))
     
     # Create a new NumPy array for the resized image
-    resized_pixel_data = np.zeros([target_height, target_width], dtype=np.uint8)
+    resized_pixel_data = np.zeros([target_height, target_width], dtype=np.uint16)
     
     # Copy the resized image into the center of the new NumPy array
     x_offset = (target_width - new_width) // 2
@@ -57,18 +59,6 @@ def resize_dicom(input_path, output_path, target_size):
     resized_pixel_data[y_offset:y_offset + new_height, x_offset:x_offset + new_width] = np.array(img)
 
     # Update DICOM metadata for the resized image
-    file_meta = FileMetaDataset()
-    p_new = pydicom.Dataset()
-    p_new.file_meta = file_meta
-    exclude_tags = [(0x0028, 0x0010), (0x0028, 0x0011), (0x7FE0, 0x0010)]
-    for elem in dicom_data:
-        if elem.tag not in exclude_tags:
-            p_new.add(elem)
-
-    p_new.is_little_endian = True
-    p_new.SOPInstanceUID = '{}.9999'.format(p_new.SOPInstanceUID)
-    p_new.file_meta.TransferSyntaxUID = pydicom.uid.ImplicitVRLittleEndian
-    p_new.is_implicit_VR = True
     p_new.Rows = target_width
     p_new.Columns = target_height
     p_new.PixelData = resized_pixel_data.tobytes()
@@ -76,8 +66,8 @@ def resize_dicom(input_path, output_path, target_size):
     p_new.save_as(output_path)
 
 if __name__ == "__main__":
-    input_path = "/Users/abhimanyu/Maastricht/Internship/non-square_dicom_files/CONSORT_C167-no-phi_raw.dcm"  # Replace with the path to your input DICOM file
-    output_path = "/Users/abhimanyu/Maastricht/Internship/non-square_dicom_files/test/resized1_CONSORT_C167-no-phi_raw.dcm"  # Replace with the desired output path
+    input_path = "/Users/abhimanyu/Maastricht/Internship/non-square_dicom_files/CONSORT_C250-no-phi_raw.dcm"  # Replace with the path to your input DICOM file
+    output_path = "/Users/abhimanyu/Maastricht/Internship/non-square_dicom_files/resized/CONSORT_C250-no-phi_raw.dcm"  # Replace with the desired output path
     target_size = (512, 512)  # Replace with your desired target size
 
     resize_dicom(input_path, output_path, target_size)
