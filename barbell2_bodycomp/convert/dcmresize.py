@@ -59,8 +59,8 @@ def resize_dicom(input_path, output_path, target_size):
     resized_pixel_data[y_offset:y_offset + new_height, x_offset:x_offset + new_width] = np.array(img)
 
     # Update DICOM metadata for the resized image
-    p_new.Rows = target_width
-    p_new.Columns = target_height
+    p_new.Rows = target_height
+    p_new.Columns = target_width
     p_new.PixelData = resized_pixel_data.tobytes()
 
     p_new.save_as(output_path)
