@@ -1,15 +1,20 @@
 import pydicom
+import logging
 
 from barbell2_bodycomp.utils import apply_window
 
 
 class Dicom2Numpy:
 
-    def __init__(self, dcm_file_path_or_obj):        
+    def __init__(self, dcm_file_path_or_obj, logger=None):        
         self.dcm_file_path_or_obj = dcm_file_path_or_obj
         self.npy_array = None
         self.window = None
         self.normalize_enabled = True
+        if logger:
+            self.logger = logger
+        else:
+            self.logger = logging.getLogger(__name__)
 
     def set_window(self, window):
         self.window = window
