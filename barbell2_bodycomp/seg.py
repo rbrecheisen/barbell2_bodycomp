@@ -8,21 +8,23 @@ import numpy as np
 from barbell2_bodycomp.convert import dcm2raw
 from barbell2_bodycomp.utils import is_dicom_file, get_pixels
 
-logger = logging.getLogger(__name__)
-
 
 class MuscleFatSegmentator:
 
     ARGMAX = 0
     PROBABILITIES = 1
 
-    def __init__(self):
+    def __init__(self, logger=None):
         self.input_files = None
         # self.image_dimensions = None
         self.model_files = None
         self.mode = MuscleFatSegmentator.ARGMAX
         self.output_directory = None
         self.output_segmentation_files = None
+        if logger:
+            self.logger = logger
+        else:
+            self.logger = logging.getLogger(__name__)
 
     @staticmethod
     def load_model(file_path):
@@ -49,7 +51,7 @@ class MuscleFatSegmentator:
             elif file_name == 'params.json':
                 params = self.load_params(file_path)
             else:
-                logger.error(f'Unknown model file {file_name}')
+                self.logger.error(f'Unknown model file {file_name}')
         return model, contour_model, params
 
     @staticmethod
@@ -82,18 +84,18 @@ class MuscleFatSegmentator:
         return new_prediction
 
     def execute(self):
-        logger.info('Running MuscleFatSegmentator...')
+        self.logger.info('Running MuscleFatSegmentator...')
         if self.input_files is None:
-            logger.error('Input files not specified')
+            self.logger.error('Input files not specified')
             return None
         # if self.image_dimensions is None:
         #     logger.error('Image dimensions not specified')
         #     return None
         if self.model_files is None:
-            logger.error('Model files not specified')
+            self.logger.error('Model files not specified')
             return None
         if self.output_directory is None:
-            logger.error('Output directory not specified')
+            self.logger.error('Output directory not specified')
             return None
         os.makedirs(self.output_directory, exist_ok=True)
         model, contour_model, params = self.load_model_files()
@@ -120,7 +122,6 @@ class MuscleFatSegmentator:
                 img2 = np.expand_dims(img2, -1)
                 pred = model.predict([img2])
                 pred_squeeze = np.squeeze(pred)
-                print(pred_squeeze[256][256])
                 if self.mode == MuscleFatSegmentator.ARGMAX:
                     pred_max = pred_squeeze.argmax(axis=-1)
                     pred_max = self.convert_labels_to_157(pred_max)
@@ -132,9 +133,9 @@ class MuscleFatSegmentator:
                     self.output_segmentation_files.append(segmentation_file)
                     np.save(segmentation_file, pred_squeeze)
                 else:
-                    logger.warn(f'Unknown mode {self.mode}')
+                    self.logger.warn(f'Unknown mode {self.mode}')
             else:
-                logger.warning(f'File {f} is not a valid DICOM file')
+                self.logger.warning(f'File {f} is not a valid DICOM file')
         return self.output_segmentation_files
 
 

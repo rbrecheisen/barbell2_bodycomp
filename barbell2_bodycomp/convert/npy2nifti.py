@@ -4,17 +4,21 @@ import logging
 import numpy as np
 import nibabel as nib
 
-logger = logging.getLogger(__name__)
+# logger = logging.getLogger(__name__)
 
 
 class NumpyToNifti:
 
-    def __init__(self):
+    def __init__(self, logger=None):
         self.input_file_or_array_obj = None
         self.flip_and_rotate = True
         self.output_file = None
         self.affine_transform = np.eye(4)
         self.version = 1
+        if logger:
+            self.logger = logger
+        else:
+            self.logger = logging.getLogger(__name__)
 
     def execute(self):
         if isinstance(self.input_file_or_array_obj, str):
@@ -58,7 +62,7 @@ def main():
                         n2n.version = args.nifti_version
                         n2n.flip_and_rotate = True if args.flip_rotate == 'yes' else False
                         n2n.execute()
-                        logger.info(f'save to {out_filepath}')
+                        print(f'save to {out_filepath}')
             else:
                 raise RuntimeError('in_dir cannot be equal to out_dir')
         else:
@@ -72,7 +76,7 @@ def main():
                 n2n.version = args.nifti_version
                 n2n.flip_and_rotate = True if args.flip_rotate == 'yes' else False
                 n2n.execute()
-                logger.info(f'save to {out_filepath}')
+                print(f'save to {out_filepath}')
             else:
                 raise RuntimeError('in_file cannot be equal to out_file')
         else:

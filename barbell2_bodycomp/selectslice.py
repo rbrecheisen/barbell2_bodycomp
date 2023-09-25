@@ -4,8 +4,6 @@ import pydicom
 import nibabel
 import numpy as np
 
-logger = logging.getLogger(__name__)
-
 
 class SliceSelector:
 
@@ -15,12 +13,16 @@ class SliceSelector:
     TOP = 3
     BOTTOM = 4
 
-    def __init__(self):
+    def __init__(self, logger=None):
         self.input_roi = None
         self.input_volume = None
         self.input_dicom_directory = None
         self.mode = SliceSelector.MEDIAN
         self.output_files = None
+        if logger:
+            self.logger = logger
+        else:
+            self.logger = logging.getLogger(__name__)
 
     @staticmethod
     def has_duplicate_objects(roi):
@@ -76,22 +78,22 @@ class SliceSelector:
         return file_paths
 
     def execute(self):
-        logger.info('Running SliceSelector...')
+        self.logger.info('Running SliceSelector...')
         if self.input_roi is None:
-            logger.error('Input ROI not specified')
+            self.logger.error('Input ROI not specified')
             return None
         if self.input_volume is None:
-            logger.error('Input NIFTI volume not specified')
+            self.logger.error('Input NIFTI volume not specified')
             return None
         if self.input_dicom_directory is None:
-            logger.error('Input DICOM directory not specified')
+            self.logger.error('Input DICOM directory not specified')
             return None
         if self.mode is None:
-            logger.error('Mode not specified')
+            self.logger.error('Mode not specified')
             return None
         roi = nibabel.load(self.input_roi)
         if self.has_duplicate_objects(roi):
-            logger.error('ROI has duplicate objects')
+            self.logger.error('ROI has duplicate objects')
             return None
         i_min, i_max = self.get_min_max_slice_idx(roi)
         volume = nibabel.load(self.input_volume)
@@ -104,7 +106,7 @@ class SliceSelector:
             elif self.mode == SliceSelector.BOTTOM:
                 self.output_files = [self.output_files[-1]]
             else:
-                logger.error('Unknown mode {}'.format(self.mode))
+                self.logger.error('Unknown mode {}'.format(self.mode))
                 self.output_files = []
         elif self.mode == SliceSelector.MEDIAN:
             z_median = z_min + np.abs(z_max - z_min) * 0.50
@@ -120,7 +122,7 @@ class SliceSelector:
             z = z_min + self.mode * (z_max - z_min)
             self.output_files = self.get_dicom_images_between(z, z, self.input_dicom_directory)
         else:
-            logger.error(f'Unknown mode: {self.mode}')
+            self.logger.error(f'Unknown mode: {self.mode}')
         return self.output_files
 
     def get_dicom_image_at_instance_number(self, instance_number):

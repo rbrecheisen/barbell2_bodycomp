@@ -1,12 +1,10 @@
 import os
 import logging
 
-logger = logging.getLogger(__name__)
-
 
 class TotalSegmentator:
 
-    def __init__(self):
+    def __init__(self, logger=None):
         self.input_file = None
         self.output_directory = None
         self.fast = False
@@ -14,21 +12,25 @@ class TotalSegmentator:
         # self.radiomics = False
         self.overwrite = True
         self.cmd = None
+        if logger:
+            self.logger = logger
+        else:
+            self.logger = logging.getLogger(__name__)
 
     @staticmethod
     def is_empty(directory):
         return len(os.listdir(directory)) == 0
 
     def execute(self):
-        logger.info('Running TotalSegmentator...')
+        self.logger.info('Running TotalSegmentator...')
         if self.input_file is None:
-            logger.error('Input NIFTI file not specified')
+            self.logger.error('Input NIFTI file not specified')
             return None
         if self.output_directory is None:
-            logger.error('Output directory not specified')
+            self.logger.error('Output directory not specified')
             return None
         if not self.overwrite and not self.is_empty(self.output_directory):
-            logger.info('Overwrite = False and output directory not empty, so skipping')
+            self.logger.info('Overwrite = False and output directory not empty, so skipping')
             return self.output_directory
         fast = ''
         if self.fast:
@@ -46,7 +48,7 @@ class TotalSegmentator:
             self.input_file,
             self.output_directory,
         )
-        logger.info(f'Running command: {self.cmd}')
+        self.logger.info(f'Running command: {self.cmd}')
         os.system(self.cmd)
         return self.output_directory
 

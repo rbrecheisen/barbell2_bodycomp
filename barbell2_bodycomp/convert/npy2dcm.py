@@ -1,19 +1,24 @@
 import os
 import pydicom
 import numpy as np
+import logging
 
 from barbell2_bodycomp.utils import get_alberta_color_map, create_fake_dicom
 
 
 class Numpy2Dicom:
 
-    def __init__(self, npy_array_or_file_path, dcm_file_path_or_obj):
+    def __init__(self, npy_array_or_file_path, dcm_file_path_or_obj, logger=None):
         self.npy_array_or_file_path = npy_array_or_file_path
         self.dcm_file_path_or_obj = dcm_file_path_or_obj
         self.color_map = get_alberta_color_map()
         self.npy_dcm_file_name = 'npy_array.dcm'
         self.npy_dcm_file_path = None
         self.output_dir = '..'
+        if logger:
+            self.logger = logger
+        else:
+            self.logger = logging.getLogger(__name__)
 
     def set_color_map(self, color_map):
         self.color_map = color_map

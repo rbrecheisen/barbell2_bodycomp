@@ -5,22 +5,24 @@ import pydicom
 
 from barbell2_bodycomp.utils import is_dicom_file
 
-logger = logging.getLogger(__name__)
-
 
 class DicomToRaw:
 
-    def __init__(self):
+    def __init__(self, logger=None):
         self.input_file_or_obj = None
         self.save_to_file = False
         self.output_file = None
+        if logger:
+            self.logger = logger
+        else:
+            self.logger = logging.getLogger(__name__)
 
     def execute(self):
         if self.input_file_or_obj is None:
-            logger.error('Input file is None')
+            self.logger.error('Input file is None')
             return None
         if self.save_to_file and self.output_file is None:
-            logger.error('Output file cannot be None if save_to_file=True')
+            self.logger.error('Output file cannot be None if save_to_file=True')
             return None
         if isinstance(self.input_file_or_obj, str):
             p = pydicom.dcmread(self.input_file_or_obj)
@@ -62,7 +64,7 @@ def main():
                         d2r.output_file = out_filepath
                         d2r.save_to_file = True
                         d2r.execute()
-                        logger.info(f'saved to {out_filepath}')
+                        print(f'saved to {out_filepath}')
             else:
                 raise RuntimeError('in_dir cannot be equal to out_dir')
         else:
@@ -75,7 +77,7 @@ def main():
                 d2r.output_file = args.out_file
                 d2r.save_to_file = True
                 d2r.execute()
-                logger.info(f'saved to {args.out_file}')
+                print(f'saved to {args.out_file}')
             else:
                 raise RuntimeError('in_file cannot be equal to out_file')
         else:

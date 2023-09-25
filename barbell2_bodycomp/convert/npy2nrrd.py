@@ -1,13 +1,18 @@
 import numpy as np
 import nrrd
+import logging
 
 
 class Numpy2Nrrd:
 
-    def __init__(self, npy_array_or_file_path, output_file_path):
+    def __init__(self, npy_array_or_file_path, output_file_path, logger=None):
         self.npy_array_or_file_path = npy_array_or_file_path
         self.output_file_path = output_file_path
         self.index_order = 'C'
+        if logger:
+            self.logger = logger
+        else:
+            self.logger = logging.getLogger(__name__)
 
     def execute(self):
         if isinstance(self.npy_array_or_file_path, str):

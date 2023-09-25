@@ -2,8 +2,6 @@ import os
 import shutil
 import logging
 
-logger = logging.getLogger(__name__)
-
 
 class RoiSelector:
 
@@ -26,31 +24,35 @@ class RoiSelector:
     RIB_RIGHT_12 = 'rib_right_12.nii.gz'
     LIVER = 'liver.nii.gz'
 
-    def __init__(self):
+    def __init__(self, logger=None):
         self.input_directory = None
         self.output_directory = None
         self.roi = RoiSelector.VERTEBRAE_L3
         self.overwrite = True
         self.output_file = None
+        if logger:
+            self.logger = logger
+        else:
+            self.logger = logging.getLogger(__name__)
 
     @staticmethod
     def exists(f):
         return os.path.isfile(f)
 
     def execute(self):
-        logger.info('Running RoiSelector...')
+        self.logger.info('Running RoiSelector...')
         if self.input_directory is None:
-            logger.error('Input directory not specified')
+            self.logger.error('Input directory not specified')
             return None
         if self.roi is None:
-            logger.error('ROI not specified')
+            self.logger.error('ROI not specified')
             return None
         if self.output_directory is None:
-            logger.error('Output directory not specified')
+            self.logger.error('Output directory not specified')
             return None
         self.output_file = os.path.join(self.output_directory, self.roi)
         if not self.overwrite and self.exists(self.output_file):
-            logger.info('Overwrite = False and output file already exists, skipping')
+            self.logger.info('Overwrite = False and output file already exists, skipping')
             return self.output_file
         os.makedirs(self.output_directory, exist_ok=True)
         shutil.copy(os.path.join(self.input_directory, self.roi), self.output_directory)

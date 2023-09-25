@@ -1,5 +1,6 @@
 import os
 import pydicom
+import logging
 
 from barbell2_bodycomp.utils import create_fake_dicom
 from barbell2_bodycomp.convert.tag2npy import Tag2Numpy
@@ -7,12 +8,16 @@ from barbell2_bodycomp.convert.tag2npy import Tag2Numpy
 
 class Tag2Dicom:
 
-    def __init__(self, tag_file_path, dcm_file_path_or_obj):
+    def __init__(self, tag_file_path, dcm_file_path_or_obj, logger=None):
         self.tag_file_path = tag_file_path
         self.dcm_file_path_or_obj = dcm_file_path_or_obj
         self.output_dir = '..'
         self.tag_dcm_file_name = None
         self.tag_dcm_file_path = None
+        if logger:
+            self.logger = logger
+        else:
+            self.logger = logging.getLogger(__name__)
 
     def set_output_dir(self, output_dir):
         self.output_dir = output_dir

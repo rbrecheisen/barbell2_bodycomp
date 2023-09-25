@@ -6,8 +6,6 @@ import pandas as pd
 
 from barbell2_bodycomp.utils import calculate_area, calculate_mean_radiation_attenuation, get_pixels
 
-logger = logging.getLogger(__name__)
-
 
 class BodyCompositionCalculator:
 
@@ -15,11 +13,15 @@ class BodyCompositionCalculator:
     VAT = 5
     SAT = 7
 
-    def __init__(self):
+    def __init__(self, logger=None):
         self.input_files = None                 # L3 images
         self.input_segmentation_files = None    # Segmentations calculated using MuscleFatSegmentator
         self.heights = None                     # (Optional) dictionary containing heights for each L3 image
         self.output_metrics = None              # Dictionary containing output metrics for each L3 image
+        if logger:
+            self.logger = logger
+        else:
+            self.logger = logging.getLogger(__name__)
 
     @staticmethod
     def load_dicom(f_path):
@@ -34,16 +36,16 @@ class BodyCompositionCalculator:
 
     def execute(self):
         # TODO: If heights are provided, output index values!!!
-        logger.info('Running BodyCompositionCalculator...')
+        self.logger.info('Running BodyCompositionCalculator...')
         if self.input_files is None:
-            logger.error('Input files not specified')
+            self.logger.error('Input files not specified')
             return None
         if self.input_segmentation_files is None:
-            logger.error('Input segmentation files not specified')
+            self.logger.error('Input segmentation files not specified')
             return None
         # Check that we're not dealing with probability maps
         if self.input_segmentation_files[0].endswith('.seg.prob.npy'):
-            logger.error('Cannot handle *.seg.prob.npy files')
+            self.logger.error('Cannot handle *.seg.prob.npy files')
             return None
         # Check that for each input file we have a matching segmentation file
         file_pairs = []
@@ -57,7 +59,7 @@ class BodyCompositionCalculator:
                     found = True
                     break
             if not found:
-                logger.warn(f'Input file {input_file_name} missing corresponding segmentation file')
+                self.logger.warn(f'Input file {input_file_name} missing corresponding segmentation file')
         # Work with found file pairs
         self.output_metrics = {}
         for file_pair in file_pairs:
@@ -72,13 +74,13 @@ class BodyCompositionCalculator:
                 'vat_ra': calculate_mean_radiation_attenuation(image, segmentations, BodyCompositionCalculator.VAT),
                 'sat_ra': calculate_mean_radiation_attenuation(image, segmentations, BodyCompositionCalculator.SAT),
             }
-            logger.info(f'{file_pair[0]}:')
-            logger.info(' - muscle_area: {}'.format(self.output_metrics[file_pair[0]]['muscle_area']))
-            logger.info(' - vat_area: {}'.format(self.output_metrics[file_pair[0]]['vat_area']))
-            logger.info(' - sat_area: {}'.format(self.output_metrics[file_pair[0]]['sat_area']))
-            logger.info(' - muscle_ra: {}'.format(self.output_metrics[file_pair[0]]['muscle_ra']))
-            logger.info(' - vat_ra: {}'.format(self.output_metrics[file_pair[0]]['vat_ra']))
-            logger.info(' - sat_ra: {}'.format(self.output_metrics[file_pair[0]]['sat_ra']))
+            self.logger.info(f'{file_pair[0]}:')
+            self.logger.info(' - muscle_area: {}'.format(self.output_metrics[file_pair[0]]['muscle_area']))
+            self.logger.info(' - vat_area: {}'.format(self.output_metrics[file_pair[0]]['vat_area']))
+            self.logger.info(' - sat_area: {}'.format(self.output_metrics[file_pair[0]]['sat_area']))
+            self.logger.info(' - muscle_ra: {}'.format(self.output_metrics[file_pair[0]]['muscle_ra']))
+            self.logger.info(' - vat_ra: {}'.format(self.output_metrics[file_pair[0]]['vat_ra']))
+            self.logger.info(' - sat_ra: {}'.format(self.output_metrics[file_pair[0]]['sat_ra']))
         return self.output_metrics
     
     def as_df(self):

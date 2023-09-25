@@ -1,5 +1,6 @@
 import os
 import numpy as np
+import logging
 import matplotlib.pyplot as plt
 
 from barbell2_bodycomp.utils import apply_color_map, get_alberta_color_map
@@ -7,7 +8,7 @@ from barbell2_bodycomp.utils import apply_color_map, get_alberta_color_map
 
 class Numpy2Png:
 
-    def __init__(self, npy_array_or_file_path):
+    def __init__(self, npy_array_or_file_path, logger=None):
         self.npy_array_or_file_path = npy_array_or_file_path
         self.png_file_name = 'npy_array.png'
         self.png_file_path = None
@@ -15,6 +16,10 @@ class Numpy2Png:
         self.color_map = None
         self.output_dir = '..'
         self.window = [400, 50]
+        if logger:
+            self.logger = logger
+        else:
+            self.logger = logging.getLogger(__name__)
 
     def set_png_file_name(self, png_file_name):
         self.png_file_name = png_file_name

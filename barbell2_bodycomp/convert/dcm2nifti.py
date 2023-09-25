@@ -2,15 +2,10 @@ import os
 import logging
 import subprocess
 
-logger = logging.getLogger(__name__)
-
-# import dcmstack
-# from dcmstack import dcmmeta
-
 
 class DicomToNifti:
 
-    def __init__(self):
+    def __init__(self, logger=None):
         try:
             subprocess.call(['dcm2niix'])
         except FileNotFoundError:
@@ -22,24 +17,28 @@ class DicomToNifti:
         self.output_file = None
         self.overwrite = True
         self.cmd = None
+        if logger:
+            self.logger = logger
+        else:
+            self.logger = logging.getLogger(__name__)
 
     @staticmethod
     def exists(f):
         return os.path.isfile(f)
 
     def execute(self, verbose=False):
-        logger.info('Running DicomToNifti...')
+        self.logger.info('Running DicomToNifti...')
         if self.input_directory is None:
-            logger.error('Input directory not specified')
+            self.logger.error('Input directory not specified')
             return None
         if self.output_file is None:
-            logger.error('Output file not specified')
+            self.logger.error('Output file not specified')
             return None
         if not self.overwrite and self.exists(self.output_file):
-            logger.info('Overwrite = False and output file already exists')
+            self.logger.info('Overwrite = False and output file already exists')
             return self.output_file
         if self.exists(self.output_file):
-            logger.warn('Output file already exists, deleting it')
+            self.logger.warn('Output file already exists, deleting it')
             file_base = os.path.splitext(self.output_file)[0]
             os.system('rm {}*'.format(file_base))
         items = os.path.split(self.output_file)
@@ -49,13 +48,13 @@ class DicomToNifti:
         elif output_file_name.endswith('.nii'):
             output_file_name = output_file_name[:-4]
         else:
-            logger.error('Output file must have extension .nii.gz or .nii')
+            self.logger.error('Output file must have extension .nii.gz or .nii')
             return None
         output_file_dir = items[0]
         os.makedirs(output_file_dir, exist_ok=True)
         self.cmd = f'dcm2niix -m y -z y -f {output_file_name} -o {output_file_dir} {self.input_directory}'
         if verbose:
-            logger.info(f'{self.cmd}')
+            self.logger.info(f'{self.cmd}')
         os.system(self.cmd)
         return self.output_file
 
