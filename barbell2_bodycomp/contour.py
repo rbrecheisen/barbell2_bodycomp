@@ -3,82 +3,52 @@ import pydicom
 import numpy as np
 import matplotlib.pyplot as plt
 
-
-def apply_window(pix, window):
-    result = (pix - window[1] + 0.5 * window[0])/window[0]
-    result[result < 0] = 0
-    result[result > 1] = 1
-    return result
+if __name__ != '__main__':
+    from barbell2_bodycomp.utils import apply_window
 
 
-def calculate_circumference(image, pixel_size_mm):
-    if image.dtype != np.uint8:
-        image = image.astype(np.uint8)
-    if len(image.shape) > 2:
-        raise ValueError('image must be 2D')
-    contours, _ = cv2.findContours(image, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
-    if len(contours) == 0:
-        return 0
-    longest_contour = max(contours, key=cv2.contourArea)
-    circumference_pixel = cv2.arcLength(longest_contour, True)
-    circumference_mm = circumference_pixel * pixel_size_mm
-    return circumference_mm
+class AbdominalCircumferenceCalculator:
+
+    def __init__(self):
+        self.input_files = None
+        self.circumference_values = {}
+
+    @staticmethod
+    def calculate_circumference(image, pixel_spacing):
+        contours, _ = cv2.findContours(image, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
+        if len(contours) == 0:
+            return 0
+        longest_contour = max(contours, key=cv2.contourArea)
+        circumference_mm = 0
+        for i in range(len(longest_contour) - 1):
+            pt1 = longest_contour[i+0][0]
+            pt2 = longest_contour[i+1][0]
+            dx = (pt2[0] - pt1[0]) * pixel_spacing[0]
+            dy = (pt2[1] - pt1[1]) * pixel_spacing[1]
+            distance = np.sqrt(dx**2 + dy**2)
+            circumference_mm += distance
+        return circumference_mm    
+
+    def get_normalized_image(self, p):
+        image = p.pixel_array
+        window = (400, 50)
+        image = p.RescaleSlope * image + p.RescaleIntercept
+        image = apply_window(image, window)
+        return image
+
+    def execute(self):
+        self.circumference_values = {}
+        for f in self.input_files:
+            p = pydicom.dcmread(f)
+            image = self.get_normalized_image(p)            
+            if image.dtype != np.uint8:
+                image = ((image - np.min(image)) / (np.max(image) - np.min(image)) * 255).astype('uint8')
+            circumference_mm = self.calculate_circumference(image, p.PixelSpacing)
+            self.circumference_values[f] = circumference_mm
+        return self.circumference_values
 
 
-def normalize_image(p):
-    image = p.pixel_array
-    window = (400, 50)
-    image = p.RescaleSlope * image + p.RescaleIntercept
-    image = apply_window(image, window)
-    # image_8bit = ((image - np.min(image)) / (np.max(image) - np.min(image)) * 255).astype(np.int8)
-    return image
-
-
-# image = cv2.imread('/Users/Ralph/Desktop/nicole_squashed_output/HBP-MUMC-001-L3pre-no-phi.dcm.png', cv2.IMREAD_GRAYSCALE)
-# pixel_size_mm = 1
-# circumference_mm = calculate_circumference(image, pixel_size_mm)
-# print(f"Circumference: {circumference_mm:.2f} mm")
-
-
-def create_image(width, height, circle_radius, rectangle_width):
-    if rectangle_width == 0:
-        rectangle_width = 1
-    img = np.zeros((height, width))
-    circle_center = (width // 2, height // 2)
-    y, x = np.ogrid[-circle_center[1]:height - circle_center[1], -circle_center[0]:width - circle_center[0]]
-    mask = x*x + y*y <= circle_radius*circle_radius
-    img[mask] = 255
-    img[:, :rectangle_width] = 0
-    img[:, -rectangle_width:] = 0    
-    return img
-
-
-def add_occluding_bars(image, rectangle_width):
-    if rectangle_width == 0:
-        rectangle_width = 1
-    image[:, :rectangle_width] = 0
-    image[:, -rectangle_width:] = 0    
-    return image
-
-
-def test_circumference_calculation():
-    width = 500
-    height = 500
-    circle_radius = 200
-    rectangle_width = 100
-    pixel_size_mm = 1
-    p = pydicom.dcmread('/Users/Ralph/Desktop/nicole_squashed_output/HBP-MUMC-001-L3pre-no-phi.dcm')
-    img = normalize_image(p)
-    img = add_occluding_bars(img, rectangle_width)
-    # img = create_image(width, height, circle_radius, rectangle_width)
-    circumference_mm = calculate_circumference(img, pixel_size_mm)
-    print(f"Circumference: {circumference_mm:.2f} mm")
-    plt.imshow(img, cmap='gray')
-    plt.axis('off')
-    plt.show()
-
-
-class AbdominalCircumFerenceEstimator:
+class AbdominalCircumferenceEstimator:
     """ Class that takes L3 image as input and estimates the abdominal circumference in cm's
     even if the abdomen is partially occluded or clipped by a FOV that is too small. This
     can easily happen with obese patients. 
@@ -88,10 +58,15 @@ class AbdominalCircumFerenceEstimator:
     def __init__(self):
         self.input_files = None
         self.input_target_labels = None
-        self.contour_model = None
-        self.contour_model_params = None
         self.circumference_estimation_model = None
         self.circumference_estimation_model_params = None
+
+    def add_random_occlusion(image, rectangle_width):
+        if rectangle_width == 0:
+            rectangle_width = 1
+        image[:, :rectangle_width] = 0
+        image[:, -rectangle_width:] = 0    
+        return image
 
     def train(self):
         """ Takes set of occluded L3 images with ground-truth circumferences (target labels) and trains
@@ -111,8 +86,13 @@ class AbdominalCircumFerenceEstimator:
         pass
 
 
-# if __name__ == '__main__':
-test_circumference_calculation()
+if __name__ == '__main__':
+    from utils import apply_window
+    calculator = AbdominalCircumferenceCalculator()
+    calculator.input_files = ['/Users/Ralph/Desktop/nicole_squashed_output/HBP-MUMC-001-L3pre-no-phi.dcm']
+    circumference_values = calculator.execute()
+    import json
+    print(json.dumps(circumference_values, indent=4))
 #     estimator = AbdominalCircumFerenceEstimator()
 #     estimator.input_files = []
 #     estimator.input_target_labels = []
