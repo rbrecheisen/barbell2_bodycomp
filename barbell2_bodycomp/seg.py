@@ -143,16 +143,20 @@ if __name__ == '__main__':
     def main():
         segmentator = MuscleFatSegmentator()
         # segmentator.input_files = ['/Users/ralph/Desktop/SliceSelector/L3.dcm']
-        segmentator.input_files = ['/mnt/localscratch/cds/rbrecheisen/raw/pancreas-demo-1/1.dcm']
+        # segmentator.input_files = ['/mnt/localscratch/cds/rbrecheisen/raw/pancreas-demo-1/1.dcm']
+        segmentator.input_files = ['/Users/ralph/Desktop/downloads/pancreasdemo/1.dcm']
         # segmentator.image_dimensions = (512, 512)
         segmentator.model_files = [
-            '/mnt/localscratch/cds/rbrecheisen/models/v2/model.zip',
-            '/mnt/localscratch/cds/rbrecheisen/models/v2/contour_model.zip',
-            '/mnt/localscratch/cds/rbrecheisen/models/v2/params.json',
+            # '/mnt/localscratch/cds/rbrecheisen/models/v2/model.zip',
+            # '/mnt/localscratch/cds/rbrecheisen/models/v2/contour_model.zip',
+            # '/mnt/localscratch/cds/rbrecheisen/models/v2/params.json',
+            '/Users/ralph/Desktop/downloads/tensorflowmodels/model.zip'
+            '/Users/ralph/Desktop/downloads/tensorflowmodels/contour_model.zip',
+            '/Users/ralph/Desktop/downloads/tensorflowmodels/params.json',
         ]
-        # segmentator.mode = MuscleFatSegmentator.ARGMAX
-        segmentator.mode = MuscleFatSegmentator.PROBABILITIES
-        segmentator.output_directory = '/tmp/barbell2/bodycomp/seg.py'
+        segmentator.mode = MuscleFatSegmentator.ARGMAX
+        # segmentator.mode = MuscleFatSegmentator.PROBABILITIES
+        segmentator.output_directory = '/Users/ralph/Desktop/downloads/musclefatsegmentator'
         files = segmentator.execute()
         for f in files:
             print(f)

@@ -61,4 +61,4 @@ if [ "$?" == "1" ]; then
 fi
 rm -rf build dist
 python setup.py sdist bdist_wheel
-twine upload dist/*
+# twine upload dist/*
